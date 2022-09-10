@@ -1,0 +1,36 @@
+version: '3.5'
+services:
+  ProductOwner:
+   image: ashirafumiiro/ownerservice:v1
+   build:
+    context: ./ProductOwner
+    dockerfile: Dockerfile
+   environment:
+    - ASPNETCORE_ENVIRONMENT=Production
+    - CONNECTIONSTRINGS__DEFAULTCONNECTION=Data Source=172.21.240.1,1433;Initial Catalog=ProductOwnerServiceDB;User Id=sa;Password=****
+    - RABBIT_MQ_SERVER=172.21.240.1
+    - RABBIT_MQ_USERNAME=guest
+    - RABBIT_MQ_PASSWORD=guest
+    - RABBITMQSETTINGS__EXCHANGENAME=OfferExchange
+    - RABBITMQSETTINGS__EXCHHANGETYPE=direct
+    - RABBITMQSETTINGS__QUEUENAME=offer_queue
+    - RABBITMQSETTINGS__ROUTEKEY=offer_route
+   ports:
+    - "4201:80"
+  ProductUser:
+   image: ashirafumiiro/userservice:v1
+   build:
+    context: ./ProductUser
+    dockerfile: Dockerfile
+   environment:
+    - ASPNETCORE_ENVIRONMENT=Production
+    - CONNECTIONSTRINGS__DEFAULTCONNECTION=Data Source=172.21.240.1,1433;Initial Catalog=ProductUserServiceDB;User Id=sa;Password=****
+    - RABBIT_MQ_SERVER=172.21.240.1
+    - RABBIT_MQ_USERNAME=guest
+    - RABBIT_MQ_PASSWORD=guest
+    - RABBITMQSETTINGS__EXCHANGENAME=OfferExchange
+    - RABBITMQSETTINGS__EXCHHANGETYPE=direct
+    - RABBITMQSETTINGS__QUEUENAME=offer_queue
+    - RABBITMQSETTINGS__ROUTEKEY=offer_route
+   ports:
+    - "4202:80"
